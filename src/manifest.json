@@ -1,0 +1,23 @@
+{
+    "name": "Deezidix",
+    "version": "1.0",
+    "description": "Deezer track/playlist/album downloader",
+    "permissions": ["tabs", "declarativeContent", "downloads"],
+    "content_scripts": [ {
+        "matches": ["http://www.deezer.com/*", "https://www.deezer.com/*"],
+        "run_at": "document_idle",
+        "js": ["content_scripts/md5.min.js", "content_scripts/aes-ecb.js", "content_scripts/jquery-3.4.1.min.js", "content_scripts/blowfish.js", "content_scripts/id3Writer.js", "content_scripts/script.js"]
+    } ],
+    "background": {
+        "scripts": ["background.js"]
+    },
+    "page_action": {
+        "default_popup": "popup.html"
+    },
+    "icons": {
+        "16": "images/Deezidix_16.png",
+        "48": "images/Deezidix_48.png",
+        "128": "images/Deezidix_128.png"
+      },
+    "manifest_version": 2
+}
