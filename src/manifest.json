@@ -2,7 +2,7 @@
     "name": "Deezidix",
     "version": "1.0",
     "description": "Deezer track/playlist/album downloader",
-    "permissions": ["tabs", "declarativeContent", "downloads"],
+    "permissions": ["tabs", "downloads", "webRequest", "<all_urls>"], 
     "content_scripts": [ {
         "matches": ["http://www.deezer.com/*", "https://www.deezer.com/*"],
         "run_at": "document_idle",

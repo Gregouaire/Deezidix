@@ -9,14 +9,17 @@ Base on the work of @An0nimia ([Deezloader](https://github.com/An0nimia/deezload
 
 
 # Installation
+## Mozilla
+You simply have to drag and drop [deezidix-1.0-an+fx.xpi](./deezidix-1.0-an+fx.xpi) in mozilla.  
 
-## Step 1: Developer mode
+## Chrome
+### Step 1: Developer mode
 Activate developer mode in chrome extension page.
-## Step 2: Install extension
-Drag and drop Deezidix.crx in chrome extension page.  
+### Step 2: Install extension
+Drag and drop [Deezidix.crx](./Deezidix.crx) in chrome extension page.  
 ![Drop to Install](./readmeResource/dropToInstall.png)
 
-## Step 3: Activate extension
+### Step 3: Activate extension
 Now Extension is installed but can't enabled.  
 To force chrome to activate it, we need to add a registry key.  
 1. First, not the extension identifier.  

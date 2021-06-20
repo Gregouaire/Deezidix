@@ -1,4 +1,4 @@
-chrome.runtime.onMessage.addListener(function(request) {
+browser.runtime.onMessage.addListener(function(request) {
     if(request.command === "downloadMessageSelected") {
         for(songDownloaded = 0; songDownloaded < selectedSongs.length; songDownloaded++) {
             let key = selectedSongs[songDownloaded];
@@ -66,7 +66,9 @@ function download(ids)
             req.open("GET", "https://e-cdns-proxy-"+info_md5[0]+".dzcdn.net/mobile/1/"+hash);
             req.responseType = "arraybuffer";
             req.addEventListener('readystatechange', function(e) {
-                downloaded(e, infos);
+                if(this.readyState === XMLHttpRequest.DONE) {
+                    downloaded(e, infos);
+                }
             });
             req.send(null);
         }
@@ -80,7 +82,9 @@ function download(ids)
             req.open("GET", "https://e-cdns-images.dzcdn.net/images/cover/"+infos["ALB_PICTURE"]+"/1200x1200-000000-80-0-0.jpg");
             req.responseType = "arraybuffer";
             req.addEventListener('readystatechange', function(e) {
-                ultimatum(e, infos, infos["SNG_TITLE"]);
+                if(this.readyState === XMLHttpRequest.DONE) {
+                    ultimatum(e, infos, infos["SNG_TITLE"]);
+                }
             });
             req.send(null);
         }
@@ -173,7 +177,7 @@ function download(ids)
 
             var req = new XMLHttpRequest();
             req.open("GET", "https://api.deezer.com/album/"+infos["ALB_ID"]);
-            req.addEventListener('readystatechange', function() {
+            req.addEventListener('readystatechange', function(e) {
                 if(this.readyState === XMLHttpRequest.DONE) {
                     var genres = [];
                     var genresData = JSON.parse(this.response)["genres"]['data'];
@@ -184,7 +188,6 @@ function download(ids)
                     for(nbArtists=0; nbArtists < infos["ARTISTS"].length; nbArtists++) {
                         artists.push(infos["ARTISTS"][nbArtists]["ART_NAME"]);
                     }
-
                     const writer = new ID3Writer(decrypted);
                     writer.setFrame('TIT2', infos["SNG_TITLE"]);
                     writer.setFrame('TPE1', artists);
@@ -196,15 +199,12 @@ function download(ids)
                         data: infos["alb_picture_array"],
                         description: 'Album picture'
                     });
-                    writer.addTag('TCON', genres);
-                    
-                    var urlToDl = URL.createObjectURL(writer.getBlob());
-                    chrome.runtime.sendMessage({command: "dlThis", url: urlToDl, name: infos["SNG_TITLE"]+".mp3"});
+                    writer.setFrame('TCON', genres);
+                    browser.runtime.sendMessage({command: "dlThis", name: infos["SNG_TITLE"]+".mp3", blob: writer.getBlob()});
                 }
             });
             req.send(null);
         }
-
     }
 
     const fbkey = calcbfkey(md5(ids));

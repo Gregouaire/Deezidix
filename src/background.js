@@ -1,16 +1,13 @@
-chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
-  chrome.declarativeContent.onPageChanged.addRules([{
-    conditions: [new chrome.declarativeContent.PageStateMatcher({
-      pageUrl: {hostEquals: 'www.deezer.com'},
-    })
-    ],
-        actions: [new chrome.declarativeContent.ShowPageAction()]
-  }]);
+browser.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+  if (changeInfo.status === 'complete' && tab.url.match('www.deezer.com')) {
+    browser.pageAction.show(tabId);
+  }
 });
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.command == "dlThis") {
-    chrome.downloads.download({ url: request.url, filename: request.name, conflictAction: 'overwrite', saveAs: true});
+    var urlToDl = URL.createObjectURL(request.blob);
+    browser.downloads.download({ url: urlToDl, filename: request.name, conflictAction: 'overwrite'});
   }
   sendResponse();
 });
