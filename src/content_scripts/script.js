@@ -1,7 +1,7 @@
 browser.runtime.onMessage.addListener(function(request) {
     if(request.command === "downloadMessageSelected") {
-        for(songDownloaded = 0; songDownloaded < selectedSongs.length; songDownloaded++) {
-            let key = selectedSongs[songDownloaded];
+        while(selectedSongs.length > 0) {
+            let key = selectedSongs.pop();
             download(key);
         }
     }
@@ -38,7 +38,10 @@ $(document).on('click','.checkbox-input',function() {
         selectedSongs.push(id);
     }
     else {
-        selectedSongs.splice(selectedSongs.indexOf(id), 1);
+        let idx = selectedSongs.indexOf(id);
+        if (idx != -1) {
+            selectedSongs.splice(selectedSongs.indexOf(id), 1);
+        }
     }
 });
 
@@ -200,7 +203,7 @@ function download(ids)
                         description: 'Album picture'
                     });
                     writer.setFrame('TCON', genres);
-                    browser.runtime.sendMessage({command: "dlThis", name: infos["SNG_TITLE"]+".mp3", blob: writer.getBlob()});
+                    browser.runtime.sendMessage({command: "dlThis", name: artists + '-' + infos["SNG_TITLE"]+".mp3", blob: writer.getBlob()});
                 }
             });
             req.send(null);
