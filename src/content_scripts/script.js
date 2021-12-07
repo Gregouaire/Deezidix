@@ -61,12 +61,20 @@ function download(ids)
         if(reqPicture.target.readyState === XMLHttpRequest.DONE) {
             infos["alb_picture_array"] = reqPicture.target.response;
             let ids = infos["SNG_ID"];
-            let quality = "3";
+            // default -> FILESIZE_MP3_128
+            let quality = "1";
+            if (infos["FILESIZE_MP3_320"] !== "0") {
+                quality = "3";
+            } else if (infos["FILESIZE_MP3_256"] !== "0") {
+                quality = "5";
+            }
             let info_md5 = infos["MD5_ORIGIN"];
             let hash = genurl(info_md5, quality, ids, infos["MEDIA_VERSION"]);
 
             let req = new XMLHttpRequest();
-            req.open("GET", "https://e-cdns-proxy-"+info_md5[0]+".dzcdn.net/mobile/1/"+hash);
+            url = "https://e-cdns-proxy-"+info_md5[0]+".dzcdn.net/mobile/1/"+hash
+            console.log(url)
+            req.open("GET", url);
             req.responseType = "arraybuffer";
             req.addEventListener('readystatechange', function(e) {
                 if(this.readyState === XMLHttpRequest.DONE) {
@@ -79,6 +87,7 @@ function download(ids)
 
     function getSongInfo(){
         if(this.readyState === XMLHttpRequest.DONE) {
+            console.log(this.response)
             let infos = JSON.parse(this.response)["results"];
             let req = new XMLHttpRequest();
 
